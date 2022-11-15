@@ -1,8 +1,5 @@
 # Razorpay Checkout Demo Extension
 
-![Extension UI](https://github.com/tarun-khanna/rzp-checkout-extension/blob/main/images/screenshot.png?raw=true)
-![Extension on website](https://github.com/tarun-khanna/rzp-checkout-extension/blob/main/images/screenshot.png?raw=true)
-
 Override pay button on merchant's webpage to open Razorpay checkout.
 
 # Installation
@@ -23,3 +20,8 @@ Override pay button on merchant's webpage to open Razorpay checkout.
 5. Click Submit.
 6. Back on the merchant's page, click on the button.
 7. It should now open razorpay checkout ! 🚀
+
+# Screenshots
+
+![Extension UI](https://github.com/tarun-khanna/rzp-checkout-extension/blob/main/images/screenshot.png?raw=true)
+![Extension on website](https://github.com/tarun-khanna/rzp-checkout-extension/blob/main/images/screenshot1.png?raw=true)
