@@ -13,7 +13,7 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
   if (msg.from === "popup") {
     if (options.selector) {
       document
-        .querySelector(previousId)
+        .querySelector(options.selector)
         .removeEventListener("click", handleClick);
     }
 

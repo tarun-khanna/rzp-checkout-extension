@@ -17,11 +17,11 @@
     <div class="section">
       <form id="checkout-form">
         <strong
-          ><label class="header" for="btn-selector"
+          ><label class="header" for="selector"
             >Add Selector for button</label
           ></strong
         >
-        <input type="text" id="btn-selector" />
+        <input type="text" id="selector" />
 
         <fieldset>
           <legend>
@@ -46,8 +46,14 @@
           <label for="amount">Amount:</label>
           <input type="number" id="amount" value="200" />
 
-          <label for="theme_color">Theme Color:</label>
-          <input type="text" id="theme_color" />
+          <label for="theme.color">Theme Color:</label>
+          <input type="text" id="theme.color" />
+
+          <label for="prefill.contact">Prefill Contact:</label>
+          <input type="text" id="prefill.contact" value="918888888888" />
+
+          <label for="prefill.email">Prefill Email:</label>
+          <input type="text" id="prefill.email" value="test@gmail.com" />
         </fieldset>
         <button type="submit">Submit</button>
       </form>

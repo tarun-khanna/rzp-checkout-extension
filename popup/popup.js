@@ -1,38 +1,47 @@
-const selecterEle = document.getElementById("btn-selector");
-const nameEle = document.getElementById("name");
-const keyEle = document.getElementById("key");
-const currencyEle = document.getElementById("currency");
-const imageEle = document.getElementById("image");
-const amountEle = document.getElementById("amount");
-const themeColorEle = document.getElementById("theme_color");
+const formElem = document.getElementById("checkout-form");
 
-document.addEventListener("DOMContentLoaded", (event) => {
+function unflattenObject(data) {
+  let result = {};
+  for (let i in data) {
+    let keys = i.split(".");
+    keys.reduce((acc, value, index) => {
+      return (
+        acc[value] ||
+        (acc[value] = isNaN(Number(keys[index + 1]))
+          ? keys.length - 1 === index
+            ? data[i]
+            : {}
+          : [])
+      );
+    }, result);
+  }
+  return result;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
   let data = window.localStorage.getItem("rzp-checkout-form");
   data = JSON.parse(data);
 
   if (data) {
-    selecterEle.value = data.selector || "";
-    nameEle.value = data.name || "";
-    imageEle.value = data.image || "";
-    amountEle.value = data.amount / 100 || "";
-    themeColorEle.value = data.theme?.color || "";
+    for (let [key, value] of Object.entries(data)) {
+      const ele = document.getElementById(key);
+      if (ele) {
+        ele.value = value || "";
+      }
+    }
   }
 });
 
-document.getElementById("checkout-form").addEventListener("submit", (ev) => {
+formElem.addEventListener("submit", (ev) => {
   ev.preventDefault();
 
-  const options = {
-    selector: selecterEle.value,
-    key: keyEle.value,
-    currency: currencyEle.value,
-    name: nameEle.value,
-    image: imageEle.value,
-    amount: amountEle.value * 100,
-    theme: {
-      color: themeColorEle.value,
-    },
-  };
+  let options = {};
+  for (let i = 0; i <= formElem.elements.length; i++) {
+    const ele = formElem.elements[i];
+    if (ele?.tagName === "INPUT" && ele.id) {
+      options[ele.id] = ele.value;
+    }
+  }
 
   localStorage.setItem("rzp-checkout-form", JSON.stringify(options));
 
@@ -42,7 +51,10 @@ document.getElementById("checkout-form").addEventListener("submit", (ev) => {
       currentWindow: true,
     },
     (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, { from: "popup", options });
+      chrome.tabs.sendMessage(tabs[0].id, {
+        from: "popup",
+        options: unflattenObject(options),
+      });
       window.close();
     }
   );
