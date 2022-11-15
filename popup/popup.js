@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     selecterEle.value = data.selector || "";
     nameEle.value = data.name || "";
     imageEle.value = data.image || "";
-    amountEle.value = data.amount || "";
+    amountEle.value = data.amount / 100 || "";
     themeColorEle.value = data.theme?.color || "";
   }
 });
