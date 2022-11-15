@@ -16,24 +16,38 @@
   <body>
     <div class="section">
       <form id="checkout-form">
-        <label for="btn-selector">Enter Selector for button</label>
+        <strong
+          ><label class="header" for="btn-selector"
+            >Add Selector for button</label
+          ></strong
+        >
         <input type="text" id="btn-selector" />
 
         <fieldset>
           <legend>
-            <strong><p id="add-options">Add Checkout options</p></strong>
+            <strong
+              ><p id="add-options" class="header">
+                Add Checkout options
+              </p></strong
+            >
           </legend>
+          <label for="key">Key:</label>
+          <input type="text" id="key" value="rzp_live_ILgsfZCZoFIKMb" />
+
           <label for="name">Name:</label>
-          <input type="text" id="name" />
+          <input type="text" id="name" value="Test Merchant" />
 
           <label for="image">Image(URL):</label>
           <input type="text" id="image" />
 
-          <label for="amount">Amount:</label>
-          <input type="number" id="amount" />
+          <label for="currency">Currency:</label>
+          <input type="text" id="currency" value="INR" />
 
-          <label for="theme">Theme:</label>
-          <input type="text" id="theme" />
+          <label for="amount">Amount:</label>
+          <input type="number" id="amount" value="200" />
+
+          <label for="theme_color">Theme Color:</label>
+          <input type="text" id="theme_color" />
         </fieldset>
         <button type="submit">Submit</button>
       </form>

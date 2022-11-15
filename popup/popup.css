@@ -28,7 +28,6 @@ input {
 
 #add-options {
   margin-bottom: 8px;
-  font-size: 14px;
   margin: 0px 6px;
 }
 
@@ -47,6 +46,10 @@ fieldset {
 
 #btn-selector {
   margin-bottom: 22px;
+}
+
+.header {
+  font-size: 14px;
 }
 
 button[type="submit"] {

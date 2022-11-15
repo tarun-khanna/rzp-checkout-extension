@@ -1,8 +1,10 @@
 const selecterEle = document.getElementById("btn-selector");
 const nameEle = document.getElementById("name");
+const keyEle = document.getElementById("key");
+const currencyEle = document.getElementById("currency");
 const imageEle = document.getElementById("image");
 const amountEle = document.getElementById("amount");
-const themeEle = document.getElementById("theme");
+const themeColorEle = document.getElementById("theme_color");
 
 document.addEventListener("DOMContentLoaded", (event) => {
   let data = window.localStorage.getItem("rzp-checkout-form");
@@ -11,9 +13,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
   if (data) {
     selecterEle.value = data.selector || "";
     nameEle.value = data.name || "";
-    imageEle.value = data.imageEle || "";
+    imageEle.value = data.image || "";
     amountEle.value = data.amount || "";
-    themeEle.value = data.theme || "";
+    themeColorEle.value = data.theme?.color || "";
   }
 });
 
@@ -22,10 +24,14 @@ document.getElementById("checkout-form").addEventListener("submit", (ev) => {
 
   const options = {
     selector: selecterEle.value,
+    key: keyEle.value,
+    currency: currencyEle.value,
     name: nameEle.value,
     image: imageEle.value,
-    amount: amountEle.value,
-    themeEle: themeEle.value,
+    amount: amountEle.value * 100,
+    theme: {
+      color: themeColorEle.value,
+    },
   };
 
   localStorage.setItem("rzp-checkout-form", JSON.stringify(options));
