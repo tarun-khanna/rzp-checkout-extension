@@ -1,0 +1,23 @@
+{
+  "name": "RZP Checkout Extension",
+  "version": "1.0.0",
+  "description": "Override pay button on merchant's webpage to open Razorpay checkout",
+  "manifest_version": 3,
+  "author": "Tarun Khanna",
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "RZP Checkout Demo"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*/*", "http://*/*"],
+      "js": ["scripts/content.js", "scripts/checkout.js"]
+    }
+  ],
+  "icons": {
+    "16": "images/rzp-16.png",
+    "32": "images/rzp-32.png",
+    "48": "images/rzp-48.png",
+    "128": "images/rzp-128.png"
+  }
+}
