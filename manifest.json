@@ -1,5 +1,5 @@
 {
-  "name": "RZP Checkout Extension",
+  "name": "RZP Checkout",
   "version": "1.0.0",
   "description": "Override pay button on merchant's webpage to open Razorpay checkout",
   "manifest_version": 3,
