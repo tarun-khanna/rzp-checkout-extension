@@ -26,7 +26,9 @@ document.addEventListener("DOMContentLoaded", () => {
     for (let [key, value] of Object.entries(data)) {
       const ele = document.getElementById(key);
       if (ele) {
-        ele.value = value || "";
+        if (key === "amount") {
+          ele.value = value / 100;
+        } else ele.value = value || "";
       }
     }
   }
@@ -39,7 +41,9 @@ formElem.addEventListener("submit", (ev) => {
   for (let i = 0; i <= formElem.elements.length; i++) {
     const ele = formElem.elements[i];
     if (ele?.tagName === "INPUT" && ele.id) {
-      options[ele.id] = ele.value;
+      if (ele.id === "amount") {
+        options[ele.id] = ele.value * 100;
+      } else options[ele.id] = ele.value;
     }
   }
 
