@@ -1,3 +1,5 @@
+import { EVENT_TYPES } from "../constants";
+
 const formElem = document.getElementById("checkout-form");
 
 function unflattenObject(data) {
@@ -56,10 +58,37 @@ formElem.addEventListener("submit", (ev) => {
     },
     (tabs) => {
       chrome.tabs.sendMessage(tabs[0].id, {
+        type: EVENT_TYPES.SET_OPTIONS,
         from: "popup",
         options: unflattenObject(options),
       });
       window.close();
     }
   );
+});
+
+document.getElementById("page-picker-btn").addEventListener("click", (ev) => {
+  chrome.tabs.query(
+    {
+      active: true,
+      currentWindow: true,
+    },
+    (tabs) => {
+      chrome.tabs.sendMessage(tabs[0].id, {
+        from: "popup",
+        enableInspector: true,
+        type: EVENT_TYPES.TOGGLE_INSPECTOR,
+      });
+      window.close();
+    }
+  );
+});
+
+document.getElementById("merchant-mode").addEventListener("change", (ev) => {
+  const merchantKeyElement = document.getElementById("key");
+  if (ev.target.value === "live") {
+    merchantKeyElement.value = "rzp_live_fQOafVJoJqscJ6";
+  } else {
+    merchantKeyElement.value = "rzp_test_rLRCKMrfIRVgEg";
+  }
 });

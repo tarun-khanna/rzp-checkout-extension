@@ -1,3 +1,18 @@
+@font-face {
+  font-family: "Roboto";
+  src: url("../assets/fonts/Roboto-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto-Medium";
+  src: url("../assets/fonts/Roboto-Medium.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto-Bold";
+  src: url("../assets/fonts/Roboto-Bold.ttf") format("truetype");
+}
+
 * {
   box-sizing: border-box;
   margin: 0px;
@@ -15,7 +30,8 @@ label {
   font-size: 12px;
 }
 
-input {
+input,
+select {
   display: block;
   width: 100%;
   padding: 8px 12px;
@@ -42,20 +58,22 @@ fieldset {
   border: 1px solid lightgray;
   border-radius: 12px;
   margin-bottom: 12px;
+  height: 400px;
+  overflow: scroll;
 }
 
 #selector {
   margin-bottom: 22px;
 }
 
-.header {
+#add-options {
   font-size: 14px;
 }
 
 button[type="submit"] {
   padding: 4px 30px;
   border: none;
-  background-color: #568de5;
+  background-color: #5451ff;
   border-radius: 0px;
   color: white;
   float: right;
@@ -66,5 +84,21 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-  background-color: #3e66a8;
+  background-color: #0400ff;
+}
+
+button#page-picker-btn {
+  border: none;
+  background: none;
+  color: #0400ff;
+  text-decoration: underline;
+  font-family: "Roboto-Medium";
+  cursor: pointer;
+  margin-left: 4px;
+}
+
+.header {
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
 }
