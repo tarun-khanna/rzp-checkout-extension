@@ -22,6 +22,7 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
   if (msg.from === "popup") {
     switch (msg.type) {
       case EVENT_TYPES.SET_OPTIONS:
+        showToast("Saved !");
         handleOptionsListener(msg);
         break;
 
@@ -71,10 +72,10 @@ document.addEventListener(
       ev.stopPropagation();
       ev.preventDefault();
 
-      let btnSelector = generateQuerySelector(ev.target);
-      if (!document.querySelector(btnSelector)) {
-        btnSelector = querySelectorFallback(ev.target);
-      }
+      // let btnSelector = generateQuerySelector(ev.target);
+      // if (!document.querySelector(btnSelector)) {
+      // }
+      const btnSelector = querySelectorFallback(ev.target);
       copyTextToClipboard(btnSelector, () => {
         showToast("Copied !");
       });
