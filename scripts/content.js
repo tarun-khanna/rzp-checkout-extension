@@ -3,6 +3,7 @@ import {
   copyTextToClipboard,
   generateQuerySelector,
   querySelectorFallback,
+  showModal,
   showToast,
 } from "./utils";
 
@@ -14,7 +15,18 @@ function handleClick(ev) {
   ev.preventDefault();
   delete options.selector;
 
+  options.handler = (response) => {
+    showModal({ state: "success", ...response });
+  };
   const rzp = new Razorpay(options);
+
+  // rzp.on("payment.failed", function (error) {
+  //   showModal({ state: "fail", ...error });
+  // });
+
+  // rzp.on("payment.error", function (data) {
+  //   showModal({ state: "fail", ...data });
+  // });
   rzp.open();
 }
 

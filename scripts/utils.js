@@ -81,10 +81,9 @@ function getIndex(node) {
 
 export function getToastStyles() {
   return `
-  #toast {
+  #toast  {
     visibility: hidden;
     min-width: 250px;
-    margin-left: -200px;
     background-color: #0400ff;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     color: white;
@@ -92,8 +91,9 @@ export function getToastStyles() {
     border-radius: 10px;
     padding: 16px;
     position: fixed;
-    z-index: 1;
+    z-index: 10000;
     left: 50%;
+    transform: translateX(-50%);
     bottom: 30px;
     font-size: 16px;
   }
@@ -126,10 +126,77 @@ export function getToastStyles() {
   `;
 }
 
-const styles = getToastStyles();
+export function getModalStyles() {
+  return `
+  #modal {
+    visibility: hidden;
+    min-width: 250px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    background-color: #fff;
+    text-align: center;
+    border-radius: 10px;
+    padding: 16px;
+    position: fixed;
+    z-index: 10000;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    font-size: 16px;
+  }
+
+  #modal h2 {
+    margin-bottom: 20px;
+  }
+
+  #modal.success {
+    border-top: 8px solid #6ECD28;
+  }
+
+  #modal.fail {
+    border-top: 8px solid #CD2828;
+  }
+
+  .close-btn {
+    border-radius: 25px;
+    width: 25px;
+    height: 25px;
+    border: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    cursor: pointer;
+  }
+
+  #modal .content {
+    min-height: 100px;
+    min-width: 300px;
+  }
+  
+  #modal.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s;
+    animation: fadein 0.5s;
+  }
+  
+  @-webkit-keyframes fadein {
+    from {transform: translateX(-50%) translateY(0%); opacity: 0;} 
+    to {transform: translateX(-50%) translateY(-50%); opacity: 1;}
+  }
+  
+  @keyframes fadein {
+    from {transform: translateX(-50%) translateY(0%); opacity: 0;}
+    to {transform: translateX(-50%) translateY(-50%); opacity: 1;}
+  }
+
+  #modal.hide {
+    visibility: hidden;
+  }
+
+  `;
+}
 
 const styleSheet = document.createElement("style");
-styleSheet.innerText = styles;
+styleSheet.innerText = `${getToastStyles()} ${getModalStyles()}`;
 document.head.appendChild(styleSheet);
 
 const toast = document.createElement("div");
@@ -144,4 +211,35 @@ export function showToast(text) {
   setTimeout(function () {
     x.className = x.className.replace("show", "");
   }, 3000);
+}
+
+const modal = document.createElement("div");
+modal.setAttribute("id", "modal");
+document.body.appendChild(modal);
+
+const getModalContent = (data) => {
+  return `
+  <div class="content">
+    <h2>${data.state === "success" ? "Success !" : "Fail"}</h2>
+    <em>Payment ID: ${data.razorpay_payment_id}</em>
+    <button class="close-btn">X</button>
+  </div>
+  `;
+};
+
+export function showModal(data) {
+  debugger;
+  const x = document.getElementById("modal");
+  x.innerHTML = getModalContent(data);
+  x.classList.remove("hide");
+  if (data.state === "success") {
+    x.classList.add("show", "success");
+  } else {
+    x.classList.add("show", "fail");
+  }
+
+  document.querySelector("#modal .close-btn").addEventListener("click", () => {
+    const x = document.getElementById("modal");
+    x.className = "hide";
+  });
 }
