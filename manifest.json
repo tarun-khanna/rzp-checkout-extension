@@ -5,13 +5,13 @@
   "manifest_version": 3,
   "author": "Tarun Khanna",
   "action": {
-    "default_popup": "popup/popup.html",
+    "default_popup": "dist/popup.html",
     "default_title": "RZP Checkout Demo"
   },
   "content_scripts": [
     {
       "matches": ["https://*/*", "http://*/*"],
-      "js": ["dist/content.js", "scripts/checkout.js"]
+      "js": ["dist/content.bundle.js", "scripts/checkout.js"]
     }
   ],
   "icons": {
