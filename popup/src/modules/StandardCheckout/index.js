@@ -1,7 +1,11 @@
 import React, { useState } from "react";
-import { EVENT_TYPES } from "../../../constants";
-import Input from "../components/Input";
-import { getInitialOptions, unflattenObject } from "../utils";
+import { EVENT_TYPES } from "../../../../constants";
+import Input from "../../components/Input";
+import { getInitialOptions, unflattenObject } from "../../utils";
+import rzpLogo from "../../assets/rzp-logo.svg";
+import inspectIcon from "../../assets/ic-inspect.svg";
+import resetIcon from "../../assets/ic-reset.svg";
+import styles from "./index.module.css";
 
 const StandardCheckout = () => {
   const [selector, setSelector] = useState("");
@@ -50,6 +54,12 @@ const StandardCheckout = () => {
     );
   };
 
+  const resetHandler = () => {
+    localStorage.removeItem("rzp-checkout-form");
+    setSelector("");
+    setOptions(getInitialOptions());
+  };
+
   const mxModeHandler = (ev) => {
     setOptions((options) => {
       return {
@@ -83,13 +93,18 @@ const StandardCheckout = () => {
   };
 
   return (
-    <div className="section">
+    <div className={styles.container}>
       <div className="header">
         <label className="header" htmlFor="selector">
           Add Selector for button
         </label>
-        <button type="button" id="page-picker-btn" onClick={handlePagePicker}>
+        <button
+          type="button"
+          className={styles.pagePickerBtn}
+          onClick={handlePagePicker}
+        >
           Pick from page
+          <img src={inspectIcon} className={styles.inspectIcon} />
         </button>
       </div>
       <input
@@ -99,11 +114,16 @@ const StandardCheckout = () => {
         }}
       />
 
-      <select onChange={mxModeHandler} name="mode" id="merchant-mode">
+      <select
+        onChange={mxModeHandler}
+        name="mode"
+        id="merchant-mode"
+        className={styles.mxModeSelect}
+      >
         <option value="test">Test</option>
         <option value="live">Live</option>
       </select>
-      <fieldset>
+      <fieldset className={styles.optionsBox}>
         <legend>
           <p id="add-options" className="header">
             Add Checkout options
@@ -121,9 +141,16 @@ const StandardCheckout = () => {
           );
         })}
       </fieldset>
-      <button className="submit-btn" onClick={submitHandler}>
-        Submit !
-      </button>
+      <div className={styles.btnContainer}>
+        <button className={styles.resetBtn} onClick={resetHandler}>
+          <img src={resetIcon} />
+          Reset
+        </button>
+        <button className={styles.submitBtn} onClick={submitHandler}>
+          <img className={styles.rzpBtnLogo} src={rzpLogo} />
+          Submit
+        </button>
+      </div>
     </div>
   );
 };

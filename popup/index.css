@@ -2,12 +2,18 @@
   box-sizing: border-box;
   margin: 0px;
   padding: 0px;
-  font-family: "Roboto";
+  font-family: "Inter";
   outline: none;
+  border: none;
+  background: none;
 }
 
 *:focus-visible {
   outline: none;
+}
+
+button {
+  cursor: pointer;
 }
 
 label {
@@ -32,18 +38,11 @@ select {
   margin: 0px 6px;
 }
 
-.section {
-  margin: auto;
-  width: 400px;
-  padding: 20px;
-}
-
 fieldset {
   padding: 20px;
   border: 1px solid lightgray;
   border-radius: 12px;
   margin-bottom: 12px;
-  height: 400px;
   overflow: scroll;
 }
 
@@ -53,34 +52,6 @@ fieldset {
 
 #add-options {
   font-size: 14px;
-}
-
-.submit-btn {
-  padding: 4px 30px;
-  border: none;
-  background-color: #5451ff;
-  border-radius: 0px;
-  color: white;
-  float: right;
-  font-size: 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-bottom: 14px;
-}
-
-.submit-btn:hover {
-  background-color: #0400ff;
-}
-
-button#page-picker-btn {
-  border: none;
-  background: none;
-  color: #0400ff;
-  text-decoration: underline;
-  font-family: "Roboto";
-  font-weight: 500;
-  cursor: pointer;
-  margin-left: 4px;
 }
 
 .header {

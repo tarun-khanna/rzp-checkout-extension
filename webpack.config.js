@@ -24,20 +24,33 @@ const coreConfig = {
         test: /\.css$/,
         use: [
           "style-loader",
-          "css-loader", // for styles
+          {
+            loader: "css-loader",
+            options: {
+              importLoaders: 1,
+              modules: true,
+            },
+          },
+        ],
+        include: /\.module\.css$/,
+      },
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+        exclude: /\.module\.css$/,
+      },
+      {
+        test: /\.(png|jp(e*)g|svg|gif)$/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "images/[hash]-[name].[ext]",
+            },
+          },
         ],
       },
     ],
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: "./popup/index.html", // base html
-      filename: "popup.html",
-    }),
-  ],
-  devServer: {
-    port: 3000,
-    static: "./dist",
   },
 };
 
@@ -47,6 +60,16 @@ module.exports = [
     entry: {
       popup: "./popup/index.js",
     },
+    devServer: {
+      port: 3000,
+      static: "./dist",
+    },
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: "./popup/index.html", // base html
+        filename: "popup.html",
+      }),
+    ],
   },
   {
     ...coreConfig,

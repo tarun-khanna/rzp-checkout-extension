@@ -1,0 +1,53 @@
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.btnContainer {
+  display: flex;
+  margin-bottom: 6px;
+}
+
+.btnContainer button {
+  padding: 8px 0px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+
+.submitBtn {
+  background-color: #0460f8;
+  color: white;
+}
+
+.resetBtn {
+  border: 1px solid #0460f8;
+  color: #0460f8;
+}
+
+.btnContainer button img {
+  height: 16px;
+  margin-right: 4px;
+}
+
+.pagePickerBtn {
+  display: flex;
+  color: #0460f8;
+  font-weight: 500;
+}
+
+.inspectIcon {
+  height: 14px;
+  margin-left: 4px;
+}
+
+.mxModeSelect {
+  margin-bottom: 20px;
+}
+
+.optionsBox {
+  height: 306px;
+}

@@ -1,3 +1,6 @@
+import stdCxLogo from "./assets/ic-std-cx.svg";
+import magicCxLogo from "./assets/ic-magic-cx.svg";
+
 export const DEFAULT_CX_OPTIONS_INPUTS = {
   key: {
     id: "key",
@@ -38,3 +41,16 @@ export const DEFAULT_CX_OPTIONS_INPUTS = {
     value: "test@gmail.com",
   },
 };
+
+export const MENU = [
+  {
+    id: "standard-cx",
+    icon: stdCxLogo,
+    label: "Standard Checkout",
+  },
+  {
+    id: "magic-cx",
+    icon: magicCxLogo,
+    label: "Magic Checkout",
+  },
+];
