@@ -8,7 +8,9 @@ import resetIcon from "../../assets/ic-reset.svg";
 import styles from "./index.module.css";
 
 const StandardCheckout = () => {
-  const [selector, setSelector] = useState("");
+  const [selector, setSelector] = useState(
+    localStorage.getItem("rzp-checkout-selector") || ""
+  );
   const [options, setOptions] = useState(getInitialOptions());
 
   const onInputChange = (ev, key) => {
@@ -23,6 +25,7 @@ const StandardCheckout = () => {
 
   const submitHandler = () => {
     localStorage.setItem("rzp-checkout-form", JSON.stringify(options));
+    localStorage.setItem("rzp-checkout-selector", selector);
     let translatedOptions = Object.entries(options).reduce(
       (acc, [key, input]) => {
         acc[key] = input.value;
@@ -56,6 +59,7 @@ const StandardCheckout = () => {
 
   const resetHandler = () => {
     localStorage.removeItem("rzp-checkout-form");
+    localStorage.removeItem("rzp-checkout-selector");
     setSelector("");
     setOptions(getInitialOptions());
   };
