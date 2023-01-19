@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { EVENT_TYPES } from "../../../../constants";
 import Input from "../../components/Input";
+import Datalist from "../../components/Datalist";
 import { getInitialOptions, unflattenObject } from "../../utils";
 import rzpLogo from "../../assets/rzp-logo.svg";
 import inspectIcon from "../../assets/ic-inspect.svg";
@@ -13,12 +14,12 @@ const StandardCheckout = () => {
   );
   const [options, setOptions] = useState(getInitialOptions());
 
-  const onInputChange = (ev, key) => {
+  const onInputChange = (val, key) => {
     setOptions((options) => ({
       ...options,
       [key]: {
         ...options[key],
-        value: key === "amount" ? ev.target.value * 100 : ev.target.value,
+        value: key === "amount" ? val * 100 : val,
       },
     }));
   };
@@ -96,6 +97,30 @@ const StandardCheckout = () => {
     );
   };
 
+  const renderInputs = () => {
+    return Object.keys(options).map((key) => {
+      let input = options[key];
+      switch (input.type) {
+        case "input":
+          return (
+            <Input
+              {...input}
+              key={input.id}
+              onChange={(ev) => onInputChange(ev.target.value, key)}
+            />
+          );
+        case "datalist":
+          return (
+            <Datalist
+              {...input}
+              key={input.id}
+              onChange={(val) => onInputChange(val, key)}
+            />
+          );
+      }
+    });
+  };
+
   return (
     <div className={styles.container}>
       <div className="header">
@@ -134,16 +159,7 @@ const StandardCheckout = () => {
           </p>
         </legend>
 
-        {Object.keys(options).map((key) => {
-          let input = options[key];
-          return (
-            <Input
-              {...input}
-              key={input.id}
-              onChange={(ev) => onInputChange(ev, key)}
-            />
-          );
-        })}
+        {renderInputs()}
       </fieldset>
       <div className={styles.btnContainer}>
         <button className={styles.resetBtn} onClick={resetHandler}>
