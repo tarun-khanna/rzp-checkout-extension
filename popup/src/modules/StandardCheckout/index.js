@@ -1,18 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { EVENT_TYPES } from "../../../../constants";
 import Input from "../../components/Input";
 import Datalist from "../../components/Datalist";
-import { getInitialOptions, unflattenObject } from "../../utils";
+import { createOptions, translateOptions } from "../../utils";
 import rzpLogo from "../../assets/rzp-logo.svg";
 import inspectIcon from "../../assets/ic-inspect.svg";
 import resetIcon from "../../assets/ic-reset.svg";
 import styles from "./index.module.css";
+import { COUNTRY_CONFIG, COUNTRY_TO_ISO, getCountry } from "../../constants";
 
 const StandardCheckout = () => {
-  const [selector, setSelector] = useState(
-    localStorage.getItem("rzp-checkout-selector") || ""
-  );
-  const [options, setOptions] = useState(getInitialOptions());
+  const [selector, setSelector] = useState("");
+  const [options, setOptions] = useState(createOptions(getCountry()));
+  const [country, setCountry] = useState(getCountry());
+  const [mode, setMode] = useState("test");
 
   const onInputChange = (val, key) => {
     setOptions((options) => ({
@@ -25,23 +26,12 @@ const StandardCheckout = () => {
   };
 
   const submitHandler = () => {
-    localStorage.setItem("rzp-checkout-form", JSON.stringify(options));
-    localStorage.setItem("rzp-checkout-selector", selector);
-    let translatedOptions = Object.entries(options).reduce(
-      (acc, [key, input]) => {
-        acc[key] = input.value;
-        return acc;
-      },
-      {}
-    );
-    translatedOptions = {
-      ...unflattenObject(translatedOptions),
-      selector,
-    };
-    translatedOptions.amount = translatedOptions.amount
-      ? translatedOptions.amount * 100
-      : "";
+    chrome.storage.local.set({
+      checkoutSelector: selector,
+      checkoutOptions: JSON.stringify(options),
+    });
 
+    let translatedOptions = translateOptions(options, selector);
     chrome.tabs.query(
       {
         active: true,
@@ -49,8 +39,8 @@ const StandardCheckout = () => {
       },
       (tabs) => {
         chrome.tabs.sendMessage(tabs[0].id, {
-          type: EVENT_TYPES.SET_OPTIONS,
           from: "popup",
+          type: EVENT_TYPES.SET_OPTIONS,
           options: translatedOptions,
         });
         window.close();
@@ -59,13 +49,13 @@ const StandardCheckout = () => {
   };
 
   const resetHandler = () => {
-    localStorage.removeItem("rzp-checkout-form");
-    localStorage.removeItem("rzp-checkout-selector");
+    chrome.storage.local.remove(["checkoutSelector", "checkoutOptions"]);
     setSelector("");
-    setOptions(getInitialOptions());
+    setOptions(createOptions(country));
   };
 
   const mxModeHandler = (ev) => {
+    setMode(ev.target.value);
     setOptions((options) => {
       return {
         ...options,
@@ -73,14 +63,32 @@ const StandardCheckout = () => {
           ...options.key,
           value:
             ev.target.value === "live"
-              ? "rzp_live_fQOafVJoJqscJ6"
-              : "rzp_test_rLRCKMrfIRVgEg",
+              ? COUNTRY_CONFIG[country].key.live
+              : COUNTRY_CONFIG[country].key.test,
+        },
+      };
+    });
+  };
+
+  const countryChangeHandler = (ev) => {
+    let _country = ev.target.value;
+    setCountry(_country);
+    setOptions((options) => {
+      return {
+        ...createOptions(_country),
+        key: {
+          ...options.key,
+          value:
+            mode === "live"
+              ? COUNTRY_CONFIG[_country].key.live
+              : COUNTRY_CONFIG[_country].key.test,
         },
       };
     });
   };
 
   const handlePagePicker = () => {
+    let translatedOptions = translateOptions(options, selector);
     chrome.tabs.query(
       {
         active: true,
@@ -89,8 +97,9 @@ const StandardCheckout = () => {
       (tabs) => {
         chrome.tabs.sendMessage(tabs[0].id, {
           from: "popup",
-          enableInspector: true,
           type: EVENT_TYPES.TOGGLE_INSPECTOR,
+          enableInspector: true,
+          options: translatedOptions,
         });
         window.close();
       }
@@ -121,6 +130,20 @@ const StandardCheckout = () => {
     });
   };
 
+  useEffect(() => {
+    chrome.storage.local
+      .get(["checkoutSelector", "checkoutOptions"])
+      .then((result) => {
+        setSelector(result.checkoutSelector);
+        const tempOptions = result.checkoutOptions
+          ? JSON.parse(result.checkoutOptions)
+          : {};
+        if (tempOptions && Object.keys(tempOptions).length) {
+          setOptions(tempOptions);
+        }
+      });
+  }, []);
+
   return (
     <div className={styles.container}>
       <div className="header">
@@ -142,16 +165,33 @@ const StandardCheckout = () => {
           setSelector(ev.target.value);
         }}
       />
+      <div className={styles.selectContainer}>
+        <div className={`${styles.column} ${styles.countrySelect}`}>
+          <label className="header" htmlFor="country">
+            Country
+          </label>
+          <select onChange={countryChangeHandler} name="country" id="country">
+            {Object.entries(COUNTRY_TO_ISO).map(([key, value]) => (
+              <option value={value}>{key}</option>
+            ))}
+          </select>
+        </div>
+        <div className={styles.column}>
+          <label className="header" htmlFor="merchant-mode">
+            Mode
+          </label>
+          <select
+            onChange={mxModeHandler}
+            name="mode"
+            id="merchant-mode"
+            className={styles.mxModeSelect}
+          >
+            <option value="test">Test</option>
+            <option value="live">Live</option>
+          </select>
+        </div>
+      </div>
 
-      <select
-        onChange={mxModeHandler}
-        name="mode"
-        id="merchant-mode"
-        className={styles.mxModeSelect}
-      >
-        <option value="test">Test</option>
-        <option value="live">Live</option>
-      </select>
       <fieldset className={styles.optionsBox}>
         <legend>
           <p id="add-options" className="header">

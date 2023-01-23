@@ -99,53 +99,29 @@ export const SUPPORTED_CURRENCIES = [
   "YER",
   "ZAR",
 ];
-export const DEFAULT_CX_OPTIONS_INPUTS = {
-  key: {
-    type: "input",
-    id: "key",
-    label: "Key",
-    value: "rzp_test_rLRCKMrfIRVgEg",
+
+export const COUNTRY_CONFIG = {
+  MY: {
+    name: "Test Malaysian Merchant",
+    key: {
+      test: "rzp_test_rLRCKMrfIRVgEg",
+      live: "rzp_live_fQOafVJoJqscJ6",
+    },
+    currency: "MYR",
+    prefill: {
+      contact: "123456789",
+    },
   },
-  name: {
-    type: "input",
-    id: "name",
-    label: "Name",
-    value: "Test Merchant",
-  },
-  image: {
-    type: "input",
-    id: "image",
-    label: "Image",
-  },
-  currency: {
-    type: "datalist",
-    suggestions: SUPPORTED_CURRENCIES,
-    id: "currency",
-    label: "Currency",
-    value: "MYR",
-  },
-  amount: {
-    type: "input",
-    id: "amount",
-    label: "Amount",
-    value: "200",
-  },
-  ["theme.color"]: {
-    type: "input",
-    id: "theme.color",
-    label: "Theme Color",
-  },
-  ["prefill.contact"]: {
-    type: "input",
-    id: "prefill.contact",
-    label: "Prefill Contact",
-    value: "123456789",
-  },
-  ["prefill.email"]: {
-    type: "input",
-    id: "prefill.email",
-    label: "Prefill Email",
-    value: "test@gmail.com",
+  IN: {
+    name: "Test Indian Merchant",
+    key: {
+      test: "rzp_test_xdw1idaxNNcenU",
+      live: "rzp_live_ILgsfZCZoFIKMb",
+    },
+    currency: "INR",
+    prefill: {
+      contact: "8888888888",
+    },
   },
 };
 
@@ -161,3 +137,25 @@ export const MENU = [
     label: "Magic Checkout",
   },
 ];
+
+export const TIMEZONE_TO_COUNTRY = {
+  "Asia/Kolkata": "India",
+  "Asia/Calcutta": "India",
+  "Asia/Kuala_Lumpur": "Malaysia",
+  "Asia/Kuching": "Malaysia",
+};
+
+export const COUNTRY_TO_ISO = {
+  India: "IN",
+  Malaysia: "MY",
+};
+
+export const getCountry = () => {
+  let country = "India";
+  if (Intl) {
+    let userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    country = TIMEZONE_TO_COUNTRY[userTimeZone];
+  }
+
+  return COUNTRY_TO_ISO[country];
+};

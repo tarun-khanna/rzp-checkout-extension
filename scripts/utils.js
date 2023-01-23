@@ -22,16 +22,6 @@ function fallbackCopyTextToClipboard(text) {
   document.body.removeChild(textArea);
 }
 
-export function copyTextToClipboard(text, cb) {
-  if (!navigator.clipboard) {
-    fallbackCopyTextToClipboard(text);
-    return;
-  }
-  navigator.clipboard.writeText(text).then(cb, function (err) {
-    cb(err);
-  });
-}
-
 export const generateQuerySelector = function (el) {
   if (el.tagName.toLowerCase() == "html") return "HTML";
   let str = el.tagName;
@@ -204,13 +194,13 @@ toast.setAttribute("id", "toast");
 toast.textContent = "Copied !";
 document.body.appendChild(toast);
 
-export function showToast(text) {
+export function showToast({ text, time }) {
   toast.textContent = text;
   const x = document.getElementById("toast");
   x.className = "show";
   setTimeout(function () {
     x.className = x.className.replace("show", "");
-  }, 3000);
+  }, time);
 }
 
 const modal = document.createElement("div");
@@ -228,7 +218,6 @@ const getModalContent = (data) => {
 };
 
 export function showModal(data) {
-  debugger;
   const x = document.getElementById("modal");
   x.innerHTML = getModalContent(data);
   x.classList.remove("hide");

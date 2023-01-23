@@ -44,10 +44,18 @@
   margin-left: 4px;
 }
 
-.mxModeSelect {
-  margin-bottom: 20px;
+.selectContainer {
+  display: flex;
+  margin-bottom: 8px;
 }
 
+.column {
+  flex: 1;
+}
+
+.countrySelect {
+  margin-right: 8px;
+}
 .optionsBox {
   height: 306px;
 }
