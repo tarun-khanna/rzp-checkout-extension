@@ -194,7 +194,7 @@ toast.setAttribute("id", "toast");
 toast.textContent = "Copied !";
 document.body.appendChild(toast);
 
-export function showToast({ text, time }) {
+export function showToast({ text, time = 3000 }) {
   toast.textContent = text;
   const x = document.getElementById("toast");
   x.className = "show";
