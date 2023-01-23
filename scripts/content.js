@@ -60,13 +60,17 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
  * @param {string} selectorToAdd
  */
 function removeAndAddListener(selectorToRemove, selectorToAdd) {
-  if (document.querySelector(selectorToRemove)) {
+  if (selectorToRemove && document.querySelector(selectorToRemove)) {
     document
       .querySelector(selectorToRemove)
       .removeEventListener("click", handleClick);
   }
 
-  document.querySelector(selectorToAdd).addEventListener("click", handleClick);
+  if (selectorToAdd && document.querySelector(selectorToAdd)) {
+    document
+      .querySelector(selectorToAdd)
+      .addEventListener("click", handleClick);
+  }
 }
 
 /**
