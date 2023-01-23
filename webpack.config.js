@@ -77,4 +77,10 @@ module.exports = [
       content: "./scripts/content.js",
     },
   },
+  {
+    ...coreConfig,
+    entry: {
+      background: "./scripts/background.js",
+    },
+  },
 ];

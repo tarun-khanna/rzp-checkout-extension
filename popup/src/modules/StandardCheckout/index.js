@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { EVENT_TYPES } from "../../../../constants";
 import Input from "../../components/Input";
 import Datalist from "../../components/Datalist";
@@ -14,23 +14,27 @@ const StandardCheckout = () => {
   const [options, setOptions] = useState(createOptions(getCountry()));
   const [country, setCountry] = useState(getCountry());
   const [mode, setMode] = useState("test");
+  const optionsInStorage = useRef(false);
+  const tabUrl = useRef("");
 
-  const onInputChange = (val, key) => {
+  const onInputChange = (value, key) => {
     setOptions((options) => ({
       ...options,
       [key]: {
         ...options[key],
-        value: key === "amount" ? val * 100 : val,
+        value,
       },
     }));
   };
 
   const submitHandler = () => {
     chrome.storage.local.set({
-      checkoutSelector: selector,
-      checkoutOptions: JSON.stringify(options),
-      country: country,
-      mode: mode,
+      [tabUrl.current]: {
+        checkoutSelector: selector,
+        checkoutOptions: JSON.stringify(options),
+        country: country,
+        mode: mode,
+      },
     });
 
     let translatedOptions = translateOptions(options, selector);
@@ -51,16 +55,13 @@ const StandardCheckout = () => {
   };
 
   const resetHandler = () => {
-    chrome.storage.local.remove([
-      "checkoutSelector",
-      "checkoutOptions",
-      "country",
-      "mode",
-    ]);
+    chrome.storage.local.remove([tabUrl.current]);
     setSelector("");
     setOptions(createOptions(country));
     setCountry(getCountry());
     setMode("test");
+    setAmountFromPage();
+    optionsInStorage.current = false;
   };
 
   const mxModeHandler = (ev) => {
@@ -139,26 +140,64 @@ const StandardCheckout = () => {
     });
   };
 
+  const setAmountFromPage = () => {
+    chrome.runtime.sendMessage(
+      {
+        from: "popup",
+        type: EVENT_TYPES.GET_AMOUNT,
+      },
+      (response) => {
+        if (!optionsInStorage.current) {
+          setOptions((options) => {
+            return {
+              ...options,
+              amount: {
+                ...options.amount,
+                value: response,
+              },
+            };
+          });
+        }
+      }
+    );
+  };
+
   useEffect(() => {
-    chrome.storage.local
-      .get(["checkoutSelector", "checkoutOptions", "country", "mode"])
-      .then((result) => {
-        setSelector(result.checkoutSelector);
-        const tempOptions = result.checkoutOptions
-          ? JSON.parse(result.checkoutOptions)
-          : {};
-        if (tempOptions && Object.keys(tempOptions).length) {
-          setOptions(tempOptions);
-        }
+    chrome.tabs.query(
+      {
+        active: true,
+        currentWindow: true,
+      },
+      (tabs) => {
+        const url = tabs[0].url.split("?")[0];
+        tabUrl.current = url;
 
-        if (result.country) {
-          setCountry(result.country);
-        }
+        chrome.storage.local.get([url]).then((result) => {
+          const dataStored = result[url];
+          if (!dataStored) return;
 
-        if (result.mode) {
-          setMode(result.mode);
-        }
-      });
+          const tempOptions = dataStored.checkoutOptions
+            ? JSON.parse(dataStored.checkoutOptions)
+            : {};
+          if (tempOptions && Object.keys(tempOptions).length) {
+            optionsInStorage.current = true;
+            setOptions(tempOptions);
+          }
+
+          setSelector(dataStored.checkoutSelector);
+
+          if (dataStored.country) {
+            setCountry(dataStored.country);
+          }
+
+          if (dataStored.mode) {
+            setMode(dataStored.mode);
+          }
+        });
+      }
+    );
+
+    setAmountFromPage();
   }, []);
 
   return (

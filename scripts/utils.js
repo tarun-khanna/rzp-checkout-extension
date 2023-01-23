@@ -1,27 +1,3 @@
-function fallbackCopyTextToClipboard(text) {
-  const textArea = document.createElement("textarea");
-  textArea.value = text;
-
-  // Avoid scrolling to bottom
-  textArea.style.top = "0";
-  textArea.style.left = "0";
-  textArea.style.position = "fixed";
-
-  document.body.appendChild(textArea);
-  textArea.focus();
-  textArea.select();
-
-  try {
-    const successful = document.execCommand("copy");
-    const msg = successful ? "successful" : "unsuccessful";
-    console.log("Fallback: Copying text command was " + msg);
-  } catch (err) {
-    console.error("Fallback: Oops, unable to copy", err);
-  }
-
-  document.body.removeChild(textArea);
-}
-
 export const generateQuerySelector = function (el) {
   if (el.tagName.toLowerCase() == "html") return "HTML";
   let str = el.tagName;
@@ -232,3 +208,83 @@ export function showModal(data) {
     x.className = "hide";
   });
 }
+
+function createRecordFromElement(element) {
+  const text = element.textContent.trim();
+  let record = {};
+  const bBox = element.getBoundingClientRect();
+
+  if (text.length <= 30 && !(bBox.x == 0 && bBox.y == 0)) {
+    record.fontSize = parseInt(getComputedStyle(element).fontSize);
+  }
+  record.y = bBox.y;
+  record.x = bBox.x;
+  record.text = text;
+  return record;
+}
+
+function filterContentInsideViewport(elem) {
+  if (
+    elem.x > window.innerWidth ||
+    elem.x < 0 ||
+    elem.y > window.innerHeight ||
+    elem.y < 0
+  ) {
+    return false;
+  }
+  return true;
+}
+
+function canBePrice(record) {
+  if (
+    record.y > 600 ||
+    record.fontSize == undefined ||
+    !record.text.match(
+      /(^(US ){0,1}(rs\.|Rs\.|RS\.|\$|₹|INR|RM|USD|CAD|C\$){0,1}(\s){0,1}[\d,]+(\.\d+){0,1}(\s){0,1}(AED){0,1}$)/
+    )
+  )
+    return false;
+  else return true;
+}
+
+/**
+ * follows below order of algo to extract price
+ * 1. check og tags, return textContent if node is present
+ * 2. check itemprop="price" attribute, return textContent if node is present
+ * 3. fallback algo
+ *    - get all elements from body
+ *    - create records from each element (x, y, text)
+ *    - filter out records that are outside viewable viewport
+ *    - filter out records that have number in text or have currency
+ *    - sort records by largest font-size
+ *    - return the first record
+ *
+ * @returns price
+ */
+export const scrapeAmountFromPage = () => {
+  // 1st check
+  if (document.querySelector('meta[property="og:price:amount"]')) {
+    return document.querySelector('meta[property="og:price:amount"]').content;
+  }
+
+  // 2nd check
+  if (document.querySelector('[itemprop="price"]')) {
+    return document.querySelector('[itemprop="price"]').textContent;
+  }
+
+  // 3rd fallback algo
+  let elements = [...document.querySelectorAll(" body *")];
+
+  let records = elements
+    .map(createRecordFromElement)
+    .filter(filterContentInsideViewport)
+    .filter(canBePrice);
+
+  let recordsSortedByFontSize = records.sort((a, b) => {
+    if (a.fontSize === b.fontSize) return a.y < b.y ? -1 : 1;
+    return a.fontSize < b.fontSize ? 1 : -1;
+  });
+
+  let priceInNumbers = recordsSortedByFontSize[0]?.text.replace(/[^0-9.]/g, "");
+  return priceInNumbers;
+};

@@ -1,7 +1,7 @@
 import { EVENT_TYPES } from "../constants";
 import {
-  generateQuerySelector,
   querySelectorFallback,
+  scrapeAmountFromPage,
   showModal,
   showToast,
 } from "./utils";
@@ -114,10 +114,41 @@ function handleDomClick(ev) {
 
     removeAndAddListener(options.selector, btnSelector);
 
-    chrome.storage.local.set({ checkoutSelector: btnSelector });
+    const url = document.location.href.split("?")[0];
+    chrome.storage.local.get([url], (result) => {
+      chrome.storage.local.set({
+        [url]: {
+          ...result[url],
+          checkoutSelector: btnSelector,
+        },
+      });
+    });
     enableInspector = false;
   }
 }
+
+function sendScrapedAmount() {
+  const amount = scrapeAmountFromPage();
+  chrome.runtime.sendMessage({
+    from: "content",
+    type: EVENT_TYPES.SET_AMOUNT,
+    value: amount || "",
+  });
+}
+
+/**
+ *  some pages take a while to load the price, 1s is a random value
+ *  dom load event doesn't work here
+ */
+setTimeout(() => {
+  sendScrapedAmount();
+}, 1000);
+
+document.addEventListener("visibilitychange", function () {
+  if (!document.hidden) {
+    sendScrapedAmount();
+  }
+});
 
 document.addEventListener(
   "click",
