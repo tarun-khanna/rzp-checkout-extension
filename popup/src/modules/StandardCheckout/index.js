@@ -29,6 +29,8 @@ const StandardCheckout = () => {
     chrome.storage.local.set({
       checkoutSelector: selector,
       checkoutOptions: JSON.stringify(options),
+      country: country,
+      mode: mode,
     });
 
     let translatedOptions = translateOptions(options, selector);
@@ -49,9 +51,16 @@ const StandardCheckout = () => {
   };
 
   const resetHandler = () => {
-    chrome.storage.local.remove(["checkoutSelector", "checkoutOptions"]);
+    chrome.storage.local.remove([
+      "checkoutSelector",
+      "checkoutOptions",
+      "country",
+      "mode",
+    ]);
     setSelector("");
     setOptions(createOptions(country));
+    setCountry(getCountry());
+    setMode("test");
   };
 
   const mxModeHandler = (ev) => {
@@ -132,7 +141,7 @@ const StandardCheckout = () => {
 
   useEffect(() => {
     chrome.storage.local
-      .get(["checkoutSelector", "checkoutOptions"])
+      .get(["checkoutSelector", "checkoutOptions", "country", "mode"])
       .then((result) => {
         setSelector(result.checkoutSelector);
         const tempOptions = result.checkoutOptions
@@ -140,6 +149,14 @@ const StandardCheckout = () => {
           : {};
         if (tempOptions && Object.keys(tempOptions).length) {
           setOptions(tempOptions);
+        }
+
+        if (result.country) {
+          setCountry(result.country);
+        }
+
+        if (result.mode) {
+          setMode(result.mode);
         }
       });
   }, []);
@@ -170,7 +187,12 @@ const StandardCheckout = () => {
           <label className="header" htmlFor="country">
             Country
           </label>
-          <select onChange={countryChangeHandler} name="country" id="country">
+          <select
+            onChange={countryChangeHandler}
+            name="country"
+            id="country"
+            value={country}
+          >
             {Object.entries(COUNTRY_TO_ISO).map(([key, value]) => (
               <option value={value}>{key}</option>
             ))}
@@ -185,6 +207,7 @@ const StandardCheckout = () => {
             name="mode"
             id="merchant-mode"
             className={styles.mxModeSelect}
+            value={mode}
           >
             <option value="test">Test</option>
             <option value="live">Live</option>
