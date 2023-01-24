@@ -1,0 +1,51 @@
+.container {
+  margin-bottom: 20px;
+}
+
+.accordion {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: #444;
+  cursor: pointer;
+  padding: 12px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 12px;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: 0.4s;
+  position: relative;
+}
+
+.active,
+.accordion:hover {
+  background-color: #ccc;
+}
+
+.panel {
+  padding: 8px 12px;
+  overflow: hidden;
+  transition: all 0.2s ease-out;
+  border: none;
+  display: none;
+}
+
+.expandedPanel {
+  border: 1px solid #dedede;
+  padding: 8px 12px;
+  display: block;
+}
+
+.icon {
+  position: absolute;
+  right: 12px;
+  transition: 0.4s;
+  top: 50%;
+  transform: translateY(-50%) rotate(0deg);
+  width: 10px;
+}
+
+.downIcon {
+  transform: translateY(-50%) rotate(90deg);
+}

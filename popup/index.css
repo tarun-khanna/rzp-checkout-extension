@@ -38,14 +38,6 @@ select {
   margin: 0px 6px;
 }
 
-fieldset {
-  padding: 20px;
-  border: 1px solid lightgray;
-  border-radius: 12px;
-  margin-bottom: 12px;
-  overflow: scroll;
-}
-
 #selector {
   margin-bottom: 22px;
 }

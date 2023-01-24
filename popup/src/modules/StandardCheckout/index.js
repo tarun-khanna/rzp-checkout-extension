@@ -6,8 +6,9 @@ import { createOptions, translateOptions } from "../../utils";
 import rzpLogo from "../../assets/rzp-logo.svg";
 import inspectIcon from "../../assets/ic-inspect.svg";
 import resetIcon from "../../assets/ic-reset.svg";
-import styles from "./index.module.css";
 import { COUNTRY_CONFIG, COUNTRY_TO_ISO, getCountry } from "../../constants";
+import Accordian from "../../components/Accordian";
+import styles from "./index.module.css";
 
 const StandardCheckout = () => {
   const [selector, setSelector] = useState("");
@@ -254,15 +255,13 @@ const StandardCheckout = () => {
         </div>
       </div>
 
-      <fieldset className={styles.optionsBox}>
-        <legend>
-          <p id="add-options" className="header">
-            Add Checkout options
-          </p>
-        </legend>
+      <Accordian
+        containerStyle={styles.accordianContainer}
+        title="Modify Checkout Options"
+      >
+        <div className={styles.optionsBox}>{renderInputs()}</div>
+      </Accordian>
 
-        {renderInputs()}
-      </fieldset>
       <div className={styles.btnContainer}>
         <button className={styles.resetBtn} onClick={resetHandler}>
           <img src={resetIcon} />
